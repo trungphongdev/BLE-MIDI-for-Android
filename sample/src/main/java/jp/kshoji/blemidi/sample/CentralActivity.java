@@ -80,20 +80,14 @@ public class CentralActivity extends Activity {
             if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                 scanDuration = duration;
-                if (shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN) ||
-                    shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_CONNECT)) {
-                    requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT}, PERMISSION_REQUEST_FINE_LOCATION);
-                }
+                requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_ADVERTISE}, PERMISSION_REQUEST_FINE_LOCATION);
                 return;
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
                 scanDuration = duration;
-                if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) ||
-                    shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_ADMIN)) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_ADMIN}, PERMISSION_REQUEST_FINE_LOCATION);
-                }
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_ADMIN}, PERMISSION_REQUEST_FINE_LOCATION);
                 return;
             }
         }
@@ -667,7 +661,9 @@ public class CentralActivity extends Activity {
         } else if (requestCode == BleUtils.SELECT_DEVICE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 ScanResult scanResult = data.getParcelableExtra(CompanionDeviceManager.EXTRA_DEVICE);
-                bleMidiCentralProvider.connectGatt(scanResult.getDevice());
+                if (scanResult != null) {
+                    bleMidiCentralProvider.connectGatt(scanResult.getDevice());
+                }
             }
         }
     }

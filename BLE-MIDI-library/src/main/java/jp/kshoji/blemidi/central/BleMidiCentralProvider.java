@@ -90,7 +90,7 @@ public final class BleMidiCentralProvider {
      */
     @SuppressLint("MissingPermission")
     public void connectGatt(BluetoothDevice bluetoothDevice) {
-        bluetoothDevice.connectGatt(context, true, midiCallback);
+        bluetoothDevice.connectGatt(context, false, midiCallback);
     }
 
     /**
@@ -257,12 +257,7 @@ public final class BleMidiCentralProvider {
 
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    deviceManager.associate(associationRequest, new Executor() {
-                        @Override
-                        public void execute(Runnable command) {
-                            command.run();
-                        }
-                    }, associationCallback);
+                    deviceManager.associate(associationRequest, Runnable::run, associationCallback);
                 } else {
                     deviceManager.associate(associationRequest, associationCallback, null);
                 }
